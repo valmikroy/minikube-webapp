@@ -1,0 +1,2 @@
+# minikube-webapp
+Example minukube
