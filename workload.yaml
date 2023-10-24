@@ -197,9 +197,8 @@ spec:
             mountPath: /data/db
       volumes:
       - name: mongo-persistent-storage
-        hostPath: 
-          path: /mnt/mongodb
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: mongo-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -213,6 +212,34 @@ spec:
       port: 27017
   type: ClusterIP
 
+
+# Storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  storageClassName: mylocalstorage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-storage
+spec:
+  storageClassName: mylocalstorage
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/mongodb"
+    type: DirectoryOrCreate  
 
 
 # vim: set tabstop=2 shiftwidth=2 expandtab
